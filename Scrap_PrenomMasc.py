@@ -1,8 +1,10 @@
 '''Shows all masculin first names from french website'''
 
-from scraptools import getElements
+from scraptools import getElements, urlIterator
 
-for pageNb in xrange(1,40):
-    href = 'http://www.quelprenom.com/prenom-garcon.php?page=%d'%pageNb
+startUrl = 'http://www.quelprenom.com/prenom-garcon.php'
+nextCssSelector = 'span.button-right'
+
+for href in urlIterator(startUrl, nextCssSelector):
     for nameTag in getElements(href, '.prenom-lien'):
         print nameTag.text
