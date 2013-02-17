@@ -1,9 +1,8 @@
 WebScraping Tools
 =================
 
-This repo contains examples of web scraping using lxml and feedparser
-lxml : http://pypi.python.org/pypi/lxml
-feedparser : http://pypi.python.org/pypi/feedparser
+This repo contains examples of web scraping.
+Dependencies are [lxml](http://pypi.python.org/pypi/lxml) for DOM traversal and [feedparser](http://pypi.python.org/pypi/feedparser) for RSS.
 
 There is also a utility class "scraptools" to group common scraping operations:
 * getElements : Get lxml elements corresponding to a cssSelector
