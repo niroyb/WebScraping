@@ -1,8 +1,11 @@
+'''Prints the titles of RSS feeds'''
+
 import feedparser
 #http://pypi.python.org/pypi/feedparser/
 #pip install feedparser
 
 def getArticleTitles(rssHref):
+    '''Returns a list of the titles from the given rssFeed'''
     feed = feedparser.parse(rssHref)
     titles = [entry.title for entry in feed.entries]
     return titles

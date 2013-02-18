@@ -1,3 +1,4 @@
+'''Tool for scraping images from the website Imgur'''
 import urllib2
 import re
 
@@ -17,7 +18,7 @@ def getImgurGalleryHrefTitle(galleryAddress):
     return ret
 
 def getImgurImageSrcs(href):
-    '''Returns a list of the src of the image(s) from the page'''
+    '''Returns a list of the src parametre of the image(s) from the page'''
     ret = []
     for e in getElements(href, 'div#image img'):
         src = e.get('src')
@@ -26,16 +27,18 @@ def getImgurImageSrcs(href):
     return ret
 
 def downloadImgurPage(href, destPath=''):
+    '''Downloads all the images from an imgur page or album'''
     imgSrcs = getImgurImageSrcs(href)
     for src in imgSrcs:
         downloadRessource(src, destPath)
     
 def downloadImgurGallery(galleryAddress, destPath=''):
+    '''Downloads all the images linked on a gallery'''
     HrefTitles = getImgurGalleryHrefTitle(galleryAddress)
     for href, title in HrefTitles:
         downloadImgurPage(href)
 
-# print etree.tostring(html, pretty_print=True, method="html")
+# Examples:
 downloadImgurPage('http://imgur.com/gallery/O87xG')
 # downloadImgurGallery('http://imgur.com/r/aww', 'Imgur/')
 # downloadImgurGallery('http://imgur.com/', 'Imgur/')

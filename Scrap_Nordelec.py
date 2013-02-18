@@ -1,9 +1,13 @@
+'''Tool for downloading the information on the companies 
+in the Nordelec building in the city of Montreal'''
+
 import re
 from lxml import etree
 from lxml.cssselect import CSSSelector
 from scraptools import getUrlContent
 
 def printUnitIdInfo(unit_id):
+    '''Prints all the info associated with the unit_id if any'''
     href = 'http://lenordelec.ca/modules/imdirectory/unit.php?unit_id=%d' % unit_id
     source = getUrlContent(href)
     html = etree.HTML(source)
@@ -32,6 +36,7 @@ def printUnitIdInfo(unit_id):
             print  '{}\t{}'.format(title.text, valueText)
         print
 
+#Example to scrap every company
 for unit_id in xrange(300):
     printUnitIdInfo(unit_id)
 # print etree.tostring(html, pretty_print=True, method="html")

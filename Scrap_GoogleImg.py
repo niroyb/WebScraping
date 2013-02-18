@@ -1,3 +1,5 @@
+'''Tool for downloading pictures from Google image search'''
+
 import json
 from scraptools import getUrlContent, downloadRessource
 

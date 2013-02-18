@@ -4,6 +4,7 @@ Polytechnique Montreal University'''
 from scraptools import getElements
 
 def getAdmittedStudents(program, year):
+    '''Returns the name of the students who joined the program in a given year'''
     href = 'http://eduportfolio.org/groupes/view/portfolio_{0}{1}{2}'\
     .format(program.lower(), year, str(year + 1)[2:])
 
@@ -13,8 +14,10 @@ def getAdmittedStudents(program, year):
         ret.append(name)
     return ret
 
+#Example programs
 #programs = ['gch', 'civ', 'ele', 'glq', 'mtr','min', 'mec', 'phs', 'ergo', 'gbm']
 
+#Example to get computer science students
 for program in ('inf', 'log'):
     for year in xrange(2007, 2013):
         print program, year
