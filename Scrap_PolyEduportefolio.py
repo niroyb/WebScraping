@@ -1,7 +1,7 @@
 '''Gets the student names of the different programs at
 Polytechnique Montreal University'''
 
-from scraptools import getElements
+from scraptools import getElementsFromUrl
 
 def getAdmittedStudents(program, year):
     '''Returns the name of the students who joined the program in a given year'''
@@ -9,7 +9,7 @@ def getAdmittedStudents(program, year):
     .format(program.lower(), year, str(year + 1)[2:])
 
     ret = []
-    for row in getElements(href, 'td:nth-child(2)'):
+    for row in getElementsFromUrl(href, 'td:nth-child(2)'):
         name = row.text.rstrip()
         ret.append(name)
     return ret

@@ -9,12 +9,16 @@ from urllib import urlretrieve
 from lxml import etree
 from lxml.cssselect import CSSSelector
 
-def getElements(url, cssSelector):
+def getElementsFromHTML(source, cssSelector):
+    '''Returns a list of lxml elements from html source corresponding to the cssSelector'''
+    dom = etree.HTML(source)
+    selector = CSSSelector(cssSelector)
+    return selector(dom)
+
+def getElementsFromUrl(url, cssSelector):
     '''Returns a list of lxml elements from url corresponding to the cssSelector'''
     source = getUrlContent(url)
-    html = etree.HTML(source)
-    selector = CSSSelector(cssSelector)
-    return selector(html)
+    return getElementsFromHTML(source, cssSelector)
 
 def urlIterator(startUrl, nextCssSelector):
     '''Yields the url of a page while there is a next one found by the cssSelector'''
@@ -22,7 +26,7 @@ def urlIterator(startUrl, nextCssSelector):
     url = startUrl
     while url:
         yield url
-        nextTags = getElements(url, nextCssSelector)
+        nextTags = getElementsFromUrl(url, nextCssSelector)
         url = None
 
         for possibleNext in nextTags:
@@ -63,5 +67,11 @@ def downloadRessource(url, destPath='', fileName=None):
     # Add final backslash if missing
     if destPath != None and len(destPath) and destPath[-1] != '/':
         destPath += '/'
-        
-    urlretrieve(url, destPath + fileName)
+    try:
+        urlretrieve(url, destPath + fileName)
+    except Exception as inst:
+        print 'Error retrieving', url 
+        print type(inst)     # the exception instance
+        print inst.args      # arguments stored in .args
+        print inst
+    

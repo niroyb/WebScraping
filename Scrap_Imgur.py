@@ -2,14 +2,14 @@
 import urllib2
 import re
 
-from scraptools import downloadRessource, getElements
+from scraptools import downloadRessource, getElementsFromUrl
 
 def getImgurGalleryHrefTitle(galleryAddress):
     '''Returns tuples of page href and img title
     href points to the page containing the image(s) not the actual image'''
     
     ret = []
-    for e in getElements(galleryAddress, 'div.post > a'):
+    for e in getElementsFromUrl(galleryAddress, 'div.post > a'):
         src = urllib2.urlparse.urljoin(galleryAddress, e.get('href'))
         imgTag = e.find('img')
         title = imgTag.get('title')
@@ -20,7 +20,7 @@ def getImgurGalleryHrefTitle(galleryAddress):
 def getImgurImageSrcs(href):
     '''Returns a list of the src parametre of the image(s) from the page'''
     ret = []
-    for e in getElements(href, 'div#image img'):
+    for e in getElementsFromUrl(href, 'div#image img'):
         src = e.get('src')
         src = re.sub('\?.*', '', src)  # remove trailing parameters
         ret.append(src)
