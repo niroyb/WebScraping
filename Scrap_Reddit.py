@@ -1,36 +1,28 @@
-
-
 import feedparser
-import scraptools
+import re
 
 def getRssOfSubReddit(subreddit):
     return 'http://www.reddit.com/r/{}/.rss'.format(subreddit)
 
 class RedditPost():
     def __init__(self, rssEntry):
+        '''Init with a feedparser entry object'''
         self.title = rssEntry.title_detail['value']
         self.linkPost = rssEntry.link
-        html = rssEntry.summary_detail['value']
-        links = scraptools.getElementsFromHTML(html, 'a')
-        self.submittedBy = links[1].text
-        self.subreddit = links[2].text
-        self.linkOut = links[3].get('href')
+        html = rssEntry.summary_detail['value'].encode('ascii', 'ignore')
+        #prettyPrint(html)
+
+        self.submittedBy = re.search('submitted by <.*?> (.*?) <', html).group(1)
+        self.subreddit = re.search('to <.*?> (.*?)<', html).group(1)
+        self.linkOut = re.search('href="([^\s]+)">\[link\]', html).group(1)
     
     def __str__(self):
-        #for key in self.__dict__.keys():
-        #    print key, self.__dict__[key]
-        #print self.__dict__
-        return '\n'.join(str(s) for s in self.__dict__.items())
-        
-        #attribs = [self.title, self.linkPost, self.submittedBy,
-        #           self.subreddit, self.]
+        return str(self.__dict__)
 
 feed = feedparser.parse(getRssOfSubReddit('all'))
 posts = [RedditPost(entry) for entry in feed.entries]
 
 for post in posts:
-    print str(post)
-
-#print '\n'.join(posts)
+    print post
               
               

@@ -43,7 +43,10 @@ def urlIterator(startUrl, nextCssSelector):
                     break
 
 def prettyPrint(element):
-    '''Factory function to pretty print an lxml element (for debugging)'''
+    '''Factory function to pretty print an lxml element or html str (for debugging)'''
+    if isinstance(element, str):
+        element = element.replace('><','>\n<')
+        element = etree.HTML(element)
     print etree.tostring(element, pretty_print=True, method="html")
         
 
