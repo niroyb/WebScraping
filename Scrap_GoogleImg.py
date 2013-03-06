@@ -28,6 +28,7 @@ def getPics(subject, destPath='', nbPages=1, startPage=0):
                     print res['url']
                     downloadRessource(res['url'], destPath)
 
-getPics('cat')
-getPics('dog')
-#getPics('cat', 'googleImgScrap/', 3)
+if __name__ == '__main__':
+    getPics('cat')
+    getPics('dog')
+    #getPics('cat', 'googleImgScrap/', 3)

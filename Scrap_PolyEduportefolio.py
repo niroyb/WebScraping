@@ -14,13 +14,15 @@ def getAdmittedStudents(program, year):
         ret.append(name)
     return ret
 
-#Example programs
-#programs = ['gch', 'civ', 'ele', 'glq', 'mtr','min', 'mec', 'phs', 'ergo', 'gbm']
 
-#Example to get computer science students
-for program in ('inf', 'log'):
-    for year in xrange(2007, 2013):
-        print program, year
-        students = getAdmittedStudents(program, year)
-        print '\n'.join(students)
-        print
+if __name__ == '__main__':
+    #Example programs
+    #programs = ['gch', 'civ', 'ele', 'glq', 'mtr','min', 'mec', 'phs', 'ergo', 'gbm']
+    
+    #Example to get computer science students
+    for program in ('inf', 'log'):
+        for year in xrange(2007, 2013):
+            print program, year
+            students = getAdmittedStudents(program, year)
+            print '\n'.join(students)
+            print

@@ -36,7 +36,7 @@ def printUnitIdInfo(unit_id):
             print  '{}\t{}'.format(title.text, valueText)
         print
 
-#Example to scrap every company
-for unit_id in xrange(300):
-    printUnitIdInfo(unit_id)
-# print etree.tostring(html, pretty_print=True, method="html")
+if __name__ == '__main__':
+    #Example to scrap every company
+    for unit_id in xrange(300):
+        printUnitIdInfo(unit_id)

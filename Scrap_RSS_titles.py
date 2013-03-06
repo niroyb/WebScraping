@@ -12,6 +12,7 @@ def getArticleTitles(rssHref):
 
 
 if __name__ == '__main__':
+    #Example parse of these rss feeds
     rssHrefs = ['http://feeds.gawker.com/gizmodo/excerpts.xml',
              'http://rss.cbc.ca/lineup/topstories.xml',
              'http://feeds.reuters.com/reuters/topNews']
