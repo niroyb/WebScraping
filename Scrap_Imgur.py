@@ -35,10 +35,26 @@ def downloadImgurPage(href, destPath=''):
 def downloadImgurGallery(galleryAddress, destPath=''):
     '''Downloads all the images linked on a gallery'''
     HrefTitles = getImgurGalleryHrefTitle(galleryAddress)
-    for href, title in HrefTitles:
+    for href, _ in HrefTitles: #We don't need the title
         downloadImgurPage(href)
+        
+def downloadImgur(href, destPath=''):
+    '''Detects the type of url and does the appropriate download'''
+    if 'gallery/' in href:
+        downloadImgurPage(href, destPath)
+    elif '/r/' in href:
+        downloadImgurGallery(href, destPath)
+    elif href[-4] == '.': #possibly a pic ex .jpg, .png
+        downloadRessource(href, destPath)
+    else:
+        imgBox = getElementsFromUrl(href, 'div.image.textbox > a')
+        for e in imgBox:
+            src = e.get('href')
+            downloadRessource(src, destPath)
 
-# Examples:
-downloadImgurPage('http://imgur.com/gallery/O87xG')
-# downloadImgurGallery('http://imgur.com/r/aww', 'Imgur/')
-# downloadImgurGallery('http://imgur.com/', 'Imgur/')
+if __name__ == '__main__':
+    downloadImgur('http://imgur.com/hktBYxl')
+    # Examples:
+    # downloadImgurPage('http://imgur.com/gallery/O87xG')
+    # downloadImgurGallery('http://imgur.com/r/aww', 'Imgur/')
+    # downloadImgurGallery('http://imgur.com/', 'Imgur/')

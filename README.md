@@ -17,4 +17,5 @@ Examples:
 * Scrap_Nordelec : Get information about the companies inside this building
 * Scrap_Eduportefolio : Get names of students attending Polytechnique Montreal
 * Scrap_PrenomMasc : Get first names from a website
+* Scrap_Reddit : Parses posts from a subreddit
 * Scrap_RSS_titles : Get the article titles of rss feeds. Usefull for a quick glance at the news from the console ;)
