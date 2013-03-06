@@ -1,7 +1,7 @@
 '''Utilities for scraping data from the internet'''
 
 from urllib2 import urlopen, urlparse
-from os import path
+from os import path, mkdir
 from sys import stderr
 from urllib import urlretrieve
 
@@ -70,6 +70,11 @@ def downloadRessource(url, destPath='', fileName=None):
     # Add final backslash if missing
     if destPath != None and len(destPath) and destPath[-1] != '/':
         destPath += '/'
+    
+    if not path.exists(destPath): 
+        mkdir(destPath)
+    
+
     try:
         urlretrieve(url, destPath + fileName)
     except Exception as inst:

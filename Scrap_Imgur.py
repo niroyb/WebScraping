@@ -1,7 +1,6 @@
 '''Tool for scraping images from the website Imgur'''
 import urllib2
 import re
-
 from scraptools import downloadRessource, getElementsFromUrl
 
 def getImgurGalleryHrefTitle(galleryAddress):
@@ -53,8 +52,7 @@ def downloadImgur(href, destPath=''):
             downloadRessource(src, destPath)
 
 if __name__ == '__main__':
-    downloadImgur('http://imgur.com/hktBYxl')
     # Examples:
-    # downloadImgurPage('http://imgur.com/gallery/O87xG')
+    downloadImgurPage('http://imgur.com/gallery/O87xG')
     # downloadImgurGallery('http://imgur.com/r/aww', 'Imgur/')
     # downloadImgurGallery('http://imgur.com/', 'Imgur/')

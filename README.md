@@ -19,3 +19,4 @@ Examples:
 * Scrap_PrenomMasc : Get first names from a website
 * Scrap_Reddit : Parses posts from a subreddit
 * Scrap_RSS_titles : Get the article titles of rss feeds. Usefull for a quick glance at the news from the console ;)
+* Scrap_Tumblr : Gets pictures based on their tags
