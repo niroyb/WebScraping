@@ -5,15 +5,19 @@ This repo contains examples of web scraping.
 Dependencies are [lxml](http://pypi.python.org/pypi/lxml) for DOM traversal and [feedparser](http://pypi.python.org/pypi/feedparser) for RSS.
 
 There is also a utility class "scraptools" to group common scraping operations:
-* getElements : Get lxml elements corresponding to a cssSelector
+* getElementsFromHTML : Returns a list of lxml elements from html source corresponding to a cssSelector
+* getElementsFromUrl : Returns a list of lxml elements from the page fetched at url corresponding to a cssSelector
 * getUrlContent : Gets the content of a url as a string
-* downloadRessource : Download the content of a  url to the disk
+* downloadResource : Download the content of a  url to the disk
+* saveResource : Saves data to file in binary write mode
 * urlIterator : Successively yields page urls while there is a next one found by the cssSelector 
 
 Examples:
 --------
 * Scrap_Imgur : Download individual images or a whole gallery
 * Scrap_GoogleImg : Download top imgages for a search on Google image
+* Scrap_Moodle : Recursively downloads all the files from the course pages on Moodle
+	It requires that you have a file nammed moodleCredentials.txt with two lines : moodle username and password
 * Scrap_Nordelec : Get information about the companies inside this building
 * Scrap_Eduportefolio : Get names of students attending Polytechnique Montreal
 * Scrap_PrenomMasc : Get first names from a website
