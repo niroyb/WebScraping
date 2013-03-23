@@ -2,6 +2,13 @@
 '''Scrap_Moodle.py : Recursively downloads all the files from 
 the course pages on Moodle'''
 
+'''
+Written in python 2.7.3
+Dependencies : lxml (pypi.python.org/pypi/lxml)
+Requires a files nammed moodleCredentials.txt in the same folder as the script
+    it should contain only two lines : username on one and password on the other
+'''
+
 __author__ = "Nicolas Roy"
 __date__ = "2013-03-23"
 __version__ = "1.0"
