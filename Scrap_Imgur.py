@@ -1,7 +1,7 @@
 '''Tool for scraping images from the website Imgur'''
 import urllib2
 import re
-from scraptools import downloadRessource, getElementsFromUrl
+from scraptools import downloadResource, getElementsFromUrl
 
 def getImgurGalleryHrefTitle(galleryAddress):
     '''Returns tuples of page href and img title
@@ -25,11 +25,11 @@ def getImgurImageSrcs(href):
         ret.append(src)
     return ret
 
-def downloadImgurPage(href, destPath=''):
+def downloadImgurPage(href, path=''):
     '''Downloads all the images from an imgur page or album'''
     imgSrcs = getImgurImageSrcs(href)
     for src in imgSrcs:
-        downloadRessource(src, destPath)
+        downloadResource(src, destPath=path)
     
 def downloadImgurGallery(galleryAddress, destPath=''):
     '''Downloads all the images linked on a gallery'''
@@ -37,19 +37,19 @@ def downloadImgurGallery(galleryAddress, destPath=''):
     for href, _ in HrefTitles: #We don't need the title
         downloadImgurPage(href)
         
-def downloadImgur(href, destPath=''):
+def downloadImgur(href, path=''):
     '''Detects the type of url and does the appropriate download'''
     if 'gallery/' in href:
-        downloadImgurPage(href, destPath)
+        downloadImgurPage(href, path)
     elif '/r/' in href:
-        downloadImgurGallery(href, destPath)
+        downloadImgurGallery(href, path)
     elif href[-4] == '.': #possibly a pic ex .jpg, .png
-        downloadRessource(href, destPath)
+        downloadResource(href, destPath=path)
     else:
         imgBox = getElementsFromUrl(href, 'div.image.textbox > a')
         for e in imgBox:
             src = e.get('href')
-            downloadRessource(src, destPath)
+            downloadResource(src, destPath=path)
 
 if __name__ == '__main__':
     # Examples:

@@ -1,5 +1,5 @@
 import re
-from scraptools import getElementsFromUrl, downloadRessource
+from scraptools import getElementsFromUrl, downloadResource
 
 def getImgSrcs(url):
     '''returns the src attribute of all images on a page'''
@@ -54,4 +54,4 @@ if __name__ == '__main__':
     print 'Downloading images...'
     for i, src in enumerate(srcs, 1):
         print i, '/', len(srcs)
-        downloadRessource(src, 'tumblr')
+        downloadResource(src, destPath='tumblr')

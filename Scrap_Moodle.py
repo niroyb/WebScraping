@@ -1,0 +1,186 @@
+# -*- coding: cp1252 -*-
+'''MoodleParser.py : Recursively downloads all the files from the course pages on Moodle'''
+
+__author__ = "Nicolas Roy"
+__date__ = "2013-03-23"
+__version__ = "1.0"
+
+import scraptools
+from lxml.cssselect import CSSSelector
+from statedConnection import getSateConnection
+import re
+from os.path import basename
+from sys import stderr
+
+class MoodleConnect:
+    '''Moodle connection object with credentials'''
+    def __init__(self, loginUrl, username, password):
+        valueDict = {'username' : username, 'password' : password}
+
+        # Change User agent
+        headers = [('User-agent', 'pyMoodleCrawler/1.0')]
+        response, self.opener = getSateConnection(loginUrl, valueDict, headers)
+
+        self.main_page = response.read()
+    
+    def getUrlData(self, url):
+        '''Returns data at url, can be a file or a page html'''
+        response = self.opener.open(url)
+        page = response.read()
+        return page
+
+class Resource():
+    '''Represents an element to download'''
+    def __init__(self, url, instanceName = ''):
+        self.url = url
+        self.instanceName = instanceName
+    
+    @staticmethod
+    def getResourceUrl(source):
+        '''Returns the ressource url from the resourceWorkaroundPageSource'''
+        elems = scraptools.getElementsFromHTML(source, '.resourceworkaround>a')
+        if len(elems) == 0:  # The resource is probably embedded in the page WTF
+            container = scraptools.getElementsFromHTML(source, 'object')
+            if len(container) == 0:  # Some other type of container
+                print source
+                container = scraptools.getElementsFromHTML(source, 'frame')
+                href = container[1].get('src')
+            else:
+                href = container[0].get('data')
+        else:
+            href = elems[0].get('href')
+        return href
+     
+    def saveTo(self, path):
+        response = connection.opener.open(self.url)
+        http_headers = response.info()
+        data = response.read()
+        
+        if 'content-disposition' in http_headers.keys():
+            # The server is answering with a file
+            cd = http_headers['content-disposition']
+            fName = re.search('filename="(.*)"', cd).group(1)
+        else:
+            # We got a workaround page, Extract real ressource url
+            resourceUrl = Resource.getResourceUrl(data)
+            fName = basename(resourceUrl)  # Get resource name
+            data = connection.getUrlData(resourceUrl)  # Get resource
+        
+        print 'Saving ', fName
+        scraptools.saveResource(data, fName, path)  # Save file
+
+class ResourceFolder():
+    def __init__(self, connection, url, folderName):
+        self.connection = connection
+        self.url = url
+        self.folderName = folderName
+        self.resources = []
+        self.pageSource = connection.getUrlData(url)
+        #print self.pageSource
+    
+    def extractResources(self):
+        ressourceElems = scraptools.getElementsFromHTML(self.pageSource, '#region-main a')
+        print len(ressourceElems), 'files found in folder', self.folderName
+        #scraptools.prettyPrint(ressourceElems[0])
+        
+        for a in ressourceElems:
+            self.resources.append(Resource(a.get('href'), a.text))
+    
+    def saveTo(self, path):
+        if len(self.resources) == 0:
+            self.extractResources()
+        
+        path = scraptools.checkPath(path)
+        for r in self.resources:
+            r.saveTo(path + self.folderName) #Save in subfolder
+
+class MoodleCoursePage():
+    def __init__(self, connection, pageUrl, sigle):
+        self.moodleConnection = connection
+        self.pageUrl = pageUrl
+        self.sigle = sigle
+        self.pageSource = connection.getUrlData(pageUrl)
+        self.resources = []
+    
+    @staticmethod
+    def getUrlAndInstanceName(element): #could be split in 2 functions
+        selector = CSSSelector('.instancename')
+        nameSpan = selector(element)[0]
+        instanceName = nameSpan.text
+        
+        selector = CSSSelector('a')
+        aTag = selector(element)[0]
+        href = aTag.get('href')
+        
+        return href, instanceName
+    
+    def extractResources(self):
+        '''Extracts the resources from a course page'''
+        ressourceElems = scraptools.getElementsFromHTML(self.pageSource, '.resource')
+        print len(ressourceElems), 'Direct resources found'
+        
+        self.resources = []
+        for element in ressourceElems:
+            
+            url, instanceName = self.getUrlAndInstanceName(element)
+            self.resources.append(Resource(url, instanceName))
+            
+        # Look for folders
+        folderElems = scraptools.getElementsFromHTML(self.pageSource, '.folder')
+        print len(folderElems), 'Folders found'
+        for folder in folderElems:
+            url, instanceName = self.getUrlAndInstanceName(folder)
+            self.resources.append(ResourceFolder(connection, url, instanceName))
+
+    def saveResources(self):
+        if len(self.resources) == 0:
+            self.extractResources()
+            
+        for r in self.resources:
+            try:
+                r.saveTo(self.sigle)
+            except Exception as e:
+                print >> stderr, e, self.pageUrl
+
+class MoodleMyPage():
+    # CourseInfo = namedtuple('CourseInfo', ['rID', 'instanceName', 'ressourceUrl'])
+    def __init__(self, moodleConnection):
+        
+        the_page = moodleConnection.main_page
+        
+        # Find course boxes
+        elems = scraptools.getElementsFromHTML(the_page, '.box.coursebox>h3>a')
+        
+        genieRe = '[A-Z]{1,4}-?([A-Z]{3})?'
+        numRe = '[0-9]{3,4}[A-Z]?'
+        sigleRe = '(' + genieRe + numRe + ')'
+        
+        self.coursePages = []
+        for e in elems:
+            courseDescription = e.text
+            match = re.match(sigleRe, courseDescription)
+            if match: #We have a course box with a valid sigle
+                sigle = match.group(1)
+                pageUrl = e.get('href')
+                self.coursePages.append(MoodleCoursePage(moodleConnection, pageUrl, sigle))
+        
+    def downloadDocuments(self):
+        for course in self.coursePages:
+            print 'Downloading documents for course', course.sigle
+            course.saveResources()  
+            print
+
+def testCourse(connection):
+    course = MoodleCoursePage(connection, 'https://moodle.polymtl.ca/course/view.php?id=32', 'INF4215')
+    course.extractResources()
+    course.saveResources()
+
+if __name__ == '__main__':
+    
+    loginUrl = 'https://moodle.polymtl.ca/login/index.php'
+    username, password = open('moodleCredentials.txt').read().splitlines()
+    connection = MoodleConnect(loginUrl, username, password)
+
+    myPage = MoodleMyPage(connection)
+    myPage.downloadDocuments()
+    

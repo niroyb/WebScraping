@@ -61,19 +61,28 @@ def getUrlContent(url):
         return None
     return s
 
-def downloadRessource(url, destPath='', fileName=None):
-    '''Saves the content at url in folder destPath as fileName''' 
-    # Default filename
-    if fileName == None:
-        fileName = path.basename(url)
-    
+def checkPath(destPath):
     # Add final backslash if missing
     if destPath != None and len(destPath) and destPath[-1] != '/':
         destPath += '/'
     
     if not path.exists(destPath): 
         mkdir(destPath)
+    return destPath
+
+def saveResource(data, fileName, destPath=''):
+    '''Saves data to file in binary write mode'''
+    destPath = checkPath(destPath)
+    with open(destPath + fileName, 'wb') as fOut:
+        fOut.write(data)
+
+def downloadResource(url, fileName=None, destPath=''):
+    '''Saves the content at url in folder destPath as fileName''' 
+    # Default filename
+    if fileName == None:
+        fileName = path.basename(url)
     
+    destPath = checkPath(destPath)
 
     try:
         urlretrieve(url, destPath + fileName)
