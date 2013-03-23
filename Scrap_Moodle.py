@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
-'''MoodleParser.py : Recursively downloads all the files from the course pages on Moodle'''
+'''Scrap_Moodle.py : Recursively downloads all the files from 
+the course pages on Moodle'''
 
 __author__ = "Nicolas Roy"
 __date__ = "2013-03-23"
@@ -179,6 +180,7 @@ if __name__ == '__main__':
     
     loginUrl = 'https://moodle.polymtl.ca/login/index.php'
     username, password = open('moodleCredentials.txt').read().splitlines()
+    print 'Establishing Connection...'
     connection = MoodleConnect(loginUrl, username, password)
 
     myPage = MoodleMyPage(connection)
