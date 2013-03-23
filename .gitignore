@@ -164,3 +164,6 @@ pip-log.txt
 
 #Sensitive info
 moodleCredentials.txt
+
+#Experiments
+Test/

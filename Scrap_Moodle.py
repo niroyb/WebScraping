@@ -40,10 +40,9 @@ class Resource():
     def getResourceUrl(source):
         '''Returns the ressource url from the resourceWorkaroundPageSource'''
         elems = scraptools.getElementsFromHTML(source, '.resourceworkaround>a')
-        if len(elems) == 0:  # The resource is probably embedded in the page WTF
+        if len(elems) == 0:  # The resource is probably embedded in the page
             container = scraptools.getElementsFromHTML(source, 'object')
             if len(container) == 0:  # Some other type of container
-                print source
                 container = scraptools.getElementsFromHTML(source, 'frame')
                 href = container[1].get('src')
             else:
@@ -170,11 +169,6 @@ class MoodleMyPage():
             print 'Downloading documents for course', course.sigle
             course.saveResources()  
             print
-
-def testCourse(connection):
-    course = MoodleCoursePage(connection, 'https://moodle.polymtl.ca/course/view.php?id=32', 'INF4215')
-    course.extractResources()
-    course.saveResources()
 
 if __name__ == '__main__':
     
