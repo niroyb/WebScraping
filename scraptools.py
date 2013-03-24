@@ -20,6 +20,11 @@ def getElementsFromUrl(url, cssSelector):
     source = getUrlContent(url)
     return getElementsFromHTML(source, cssSelector)
 
+def getDOM(url):
+    source = getUrlContent(url)
+    DOM = etree.HTML(source)
+    return DOM
+
 def urlIterator(startUrl, nextCssSelector):
     '''Yields the url of a page while there is a next one found by the cssSelector'''
     #This function takes time because it has to parse the dom to get the next url
@@ -41,6 +46,22 @@ def urlIterator(startUrl, nextCssSelector):
                     href = newTag.get('href')
                     url = urlparse.urljoin(startUrl, href)
                     break
+
+def domIterator(startUrl, nextCssSelector):
+    dom = getDOM(startUrl)
+    nextSelector = CSSSelector('.pager li:nth-child(10) a')
+    while dom is not None:
+        yield dom
+        nextTags = nextSelector(dom)
+        dom = None
+        for possibleNext in nextTags:
+            if possibleNext.tag == 'a':
+                url = possibleNext.get('href')
+                url = urlparse.urljoin(startUrl, url)
+                dom = getDOM(url)
+                break
+            
+                
 
 def prettyPrint(element):
     '''Factory function to pretty print an lxml element or html str (for debugging)'''
@@ -66,7 +87,7 @@ def checkPath(destPath):
     if destPath != None and len(destPath) and destPath[-1] != '/':
         destPath += '/'
     
-    if not path.exists(destPath): 
+    if destPath != '' and not path.exists(destPath): 
         mkdir(destPath)
     return destPath
 
