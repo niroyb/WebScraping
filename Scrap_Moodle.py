@@ -3,9 +3,11 @@
 the course pages on Moodle'''
 
 '''
-Written in python 2.7.3
-Dependencies : lxml (pypi.python.org/pypi/lxml)
-Requires a files nammed moodleCredentials.txt in the same folder as the script
+Written in Python 2.7.3
+Dependencies :
+    lxml (pypi.python.org/pypi/lxml)
+    statedConnection and scraptools from https://github.com/niroyb/WebScraping
+Requires a files named moodleCredentials.txt in the same folder as the script
     it should contain only two lines : username on one and password on the other
 '''
 
