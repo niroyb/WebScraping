@@ -9,6 +9,12 @@ from urllib import urlretrieve
 from lxml import etree
 from lxml.cssselect import CSSSelector
 
+def getDOM(url):
+    '''Returns the DOM element of the page at url'''
+    source = getUrlContent(url)
+    DOM = etree.HTML(source)
+    return DOM
+
 def getElementsFromHTML(source, cssSelector):
     '''Returns a list of lxml elements from html source corresponding to the cssSelector'''
     dom = etree.HTML(source)
@@ -19,11 +25,6 @@ def getElementsFromUrl(url, cssSelector):
     '''Returns a list of lxml elements from url corresponding to the cssSelector'''
     source = getUrlContent(url)
     return getElementsFromHTML(source, cssSelector)
-
-def getDOM(url):
-    source = getUrlContent(url)
-    DOM = etree.HTML(source)
-    return DOM
 
 def urlIterator(startUrl, nextCssSelector):
     '''Yields the url of a page while there is a next one found by the cssSelector'''
@@ -60,8 +61,6 @@ def domIterator(startUrl, nextCssSelector):
                 url = urlparse.urljoin(startUrl, url)
                 dom = getDOM(url)
                 break
-            
-                
 
 def prettyPrint(element):
     '''Factory function to pretty print an lxml element or html str (for debugging)'''
