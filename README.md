@@ -15,6 +15,7 @@ There is also a utility class "scraptools" to group common scraping operations:
 
 Examples:
 --------
+* Scrap_97ThingsProgrammer : Aggregates 97 good programming practices and generates a printer friendly html page
 * Scrap_Eduportefolio : Get names of students attending Polytechnique Montreal
 * Scrap_GoogleImg : Download top imgages for a search on Google image
 * Scrap_Imgur : Download individual images or a whole gallery

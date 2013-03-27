@@ -1,3 +1,5 @@
+'''Aggregates 97 good programming practices and generates a printer friendly html page'''
+
 import scraptools
 from urllib2 import urlparse
 from lxml import etree
@@ -13,12 +15,14 @@ h1 {page-break-before: always;}
 '''
 
 def getHTMLContent(url):
+    '''Get html code of main content of a url on Oreilly'''
     elems = scraptools.getElementsFromUrl(url, '#content')
     content = elems[0]
     return etree.tostring(content, pretty_print=True, method="html")
     
 
 def scrapOreily(indexUrl, outName):
+    '''Generates an html page from the index located at indexUrl'''
     links = scraptools.getElementsFromUrl(url, '#bodyContent ol a:nth-child(1)')
     
     f = open(outName, 'w')
