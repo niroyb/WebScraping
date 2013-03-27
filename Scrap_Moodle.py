@@ -42,12 +42,12 @@ class MoodleConnect:
 class Resource():
     '''Represents an element to download'''
     def __init__(self, url, instanceName = ''):
-        self.url = url
+        self.url = url #url ending with resource id
         self.instanceName = instanceName
     
     @staticmethod
     def getResourceUrl(source):
-        '''Returns the ressource url from the resourceWorkaroundPageSource'''
+        '''Returns the resource url from the resourceWorkaroundPageSource'''
         elems = scraptools.getElementsFromHTML(source, '.resourceworkaround>a')
         if len(elems) == 0:  # The resource is probably embedded in the page
             container = scraptools.getElementsFromHTML(source, 'object')
@@ -70,7 +70,7 @@ class Resource():
             cd = http_headers['content-disposition']
             fName = re.search('filename="(.*)"', cd).group(1)
         else:
-            # We got a workaround page, Extract real ressource url
+            # We got a workaround page, Extract real resource url
             resourceUrl = Resource.getResourceUrl(data)
             fName = basename(resourceUrl)  # Get resource name
             data = connection.getUrlData(resourceUrl)  # Get resource
@@ -84,15 +84,13 @@ class ResourceFolder():
         self.url = url
         self.folderName = folderName
         self.resources = []
-        self.pageSource = connection.getUrlData(url)
-        #print self.pageSource
     
     def extractResources(self):
-        ressourceElems = scraptools.getElementsFromHTML(self.pageSource, '#region-main a')
-        print len(ressourceElems), 'files found in folder', self.folderName
-        #scraptools.prettyPrint(ressourceElems[0])
+        pageSource = connection.getUrlData(self.url)
+        resourceElems = scraptools.getElementsFromHTML(pageSource, '#region-main a')
+        print len(resourceElems), 'files found in folder', self.folderName
         
-        for a in ressourceElems:
+        for a in resourceElems:
             self.resources.append(Resource(a.get('href'), a.text))
     
     def saveTo(self, path):
@@ -108,7 +106,6 @@ class MoodleCoursePage():
         self.moodleConnection = connection
         self.pageUrl = pageUrl
         self.sigle = sigle
-        self.pageSource = connection.getUrlData(pageUrl)
         self.resources = []
     
     @staticmethod
@@ -125,17 +122,17 @@ class MoodleCoursePage():
     
     def extractResources(self):
         '''Extracts the resources from a course page'''
-        ressourceElems = scraptools.getElementsFromHTML(self.pageSource, '.resource')
-        print len(ressourceElems), 'Direct resources found'
+        pageSource = connection.getUrlData(self.pageUrl)
+        resourceElems = scraptools.getElementsFromHTML(pageSource, '.resource')
+        print len(resourceElems), 'Direct resources found'
         
         self.resources = []
-        for element in ressourceElems:
-            
+        for element in resourceElems:
             url, instanceName = self.getUrlAndInstanceName(element)
             self.resources.append(Resource(url, instanceName))
             
         # Look for folders
-        folderElems = scraptools.getElementsFromHTML(self.pageSource, '.folder')
+        folderElems = scraptools.getElementsFromHTML(pageSource, '.folder')
         print len(folderElems), 'Folders found'
         for folder in folderElems:
             url, instanceName = self.getUrlAndInstanceName(folder)
@@ -152,13 +149,12 @@ class MoodleCoursePage():
                 print >> stderr, e, self.pageUrl
 
 class MoodleMyPage():
-    # CourseInfo = namedtuple('CourseInfo', ['rID', 'instanceName', 'ressourceUrl'])
     def __init__(self, moodleConnection):
         
-        the_page = moodleConnection.main_page
+        pageSource = moodleConnection.main_page
         
         # Find course boxes
-        elems = scraptools.getElementsFromHTML(the_page, '.box.coursebox>h3>a')
+        elems = scraptools.getElementsFromHTML(pageSource, '.box.coursebox>h3>a')
         
         genieRe = '[A-Z]{1,4}-?([A-Z]{3})?'
         numRe = '[0-9]{3,4}[A-Z]?'
