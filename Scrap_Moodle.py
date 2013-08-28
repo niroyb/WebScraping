@@ -7,8 +7,6 @@ Written in Python 2.7.3
 Dependencies :
     lxml (pypi.python.org/pypi/lxml)
     statedConnection and scraptools from https://github.com/niroyb/WebScraping
-Requires a files named moodleCredentials.txt in the same folder as the script
-    it should contain only two lines : username on one and password on the other
 '''
 
 __author__ = "Nicolas Roy"
@@ -21,6 +19,7 @@ from statedConnection import getSateConnection
 import re
 from os.path import basename
 from sys import stderr
+import getpass
 
 class MoodleConnect:
     '''Moodle connection object with credentials'''
@@ -154,7 +153,7 @@ class MoodleMyPage():
         pageSource = moodleConnection.main_page
         
         # Find course boxes
-        elems = scraptools.getElementsFromHTML(pageSource, '.box.coursebox>h3>a')
+        elems = scraptools.getElementsFromHTML(pageSource, '.course_title a')
         
         genieRe = '[A-Z]{1,4}-?([A-Z]{3})?'
         numRe = '[0-9]{3,4}[A-Z]?'
@@ -175,13 +174,22 @@ class MoodleMyPage():
             course.saveResources()  
             print
 
+def test_mypage(mypage):
+    assert len(myPage.coursePages) > 0, "Error no courses found"
+    #print '\n'.join([c.sigle  for c in myPage.coursePages])
+    #print connection.main_page
+    #print '\n'.join([c.sigle  for c in myPage.coursePages])
+
 if __name__ == '__main__':
     
     loginUrl = 'https://moodle.polymtl.ca/login/index.php'
-    username, password = open('moodleCredentials.txt').read().splitlines()
+    print 'Credentials', loginUrl
+    username = raw_input('username: ')
+    password = getpass.getpass('password: ')
+    
+    #username, password = open('moodleCredentials.txt').read().splitlines()
     print 'Establishing Connection...'
     connection = MoodleConnect(loginUrl, username, password)
-
     myPage = MoodleMyPage(connection)
+    test_mypage(myPage)
     myPage.downloadDocuments()
-    
