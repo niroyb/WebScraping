@@ -50,7 +50,7 @@ def urlIterator(startUrl, nextCssSelector):
 
 def domIterator(startUrl, nextCssSelector):
     dom = getDOM(startUrl)
-    nextSelector = CSSSelector('.pager li:nth-child(10) a')
+    nextSelector = CSSSelector(nextCssSelector)
     while dom is not None:
         yield dom
         nextTags = nextSelector(dom)
