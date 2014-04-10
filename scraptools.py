@@ -15,11 +15,14 @@ def getDOM(url):
     DOM = etree.HTML(source)
     return DOM
 
+def getElementsFromDom(dom, cssSelector):
+    selector = CSSSelector(cssSelector)
+    return selector(dom)
+
 def getElementsFromHTML(source, cssSelector):
     '''Returns a list of lxml elements from html source corresponding to the cssSelector'''
     dom = etree.HTML(source)
-    selector = CSSSelector(cssSelector)
-    return selector(dom)
+    return getElementsFromDom(dom, cssSelector)
 
 def getElementsFromUrl(url, cssSelector):
     '''Returns a list of lxml elements from url corresponding to the cssSelector'''
